@@ -14,7 +14,9 @@ login_page = login.Login(website)
 noreceipt_claim = noreceipt.NoReceipt()
 success = login_page.login(driver, "qc+ayapostwsaemp2t2@ayapayments.com", "Test_test1" )
 if success:
-    noreceipt_claim.submit(driver)
+    #noreceipt_claim.submit_hsa_wsa(driver, True)
+    #noreceipt_claim.submit_hsa_only(driver, True)
+    noreceipt_claim.submit_wsa_only(driver, False)
     
 
 

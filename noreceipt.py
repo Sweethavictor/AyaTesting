@@ -9,10 +9,13 @@ class NoReceipt():
     def __init__(self):
         self.success = False
     
-    def submit(self, driver):
+    #Only works for postpay
+    def normal_submit_procedure(self, driver, prepay):
         submit_claim_btn = driver.find_element(By.CLASS_NAME, "sc-bjUoiL.leXMUQ")
         time.sleep(5)
         submit_claim_btn.click()
+        if prepay:
+            self.prepay_thingy(driver)
         no_recipt = driver.find_element(By.CLASS_NAME, "ClaimSubmission_text__cNzhv")
         time.sleep(5)
         no_recipt.click()
@@ -35,6 +38,51 @@ class NoReceipt():
         claim_submit_btn = driver.find_element(By.XPATH, "//*[@id='root']/div/div/div/div[2]/div/div[2]/div/div[3]/button[1]")
         claim_submit_btn.click()
         time.sleep(10)
+    
+    def submit_hsa(self, driver):
+        health_btn = driver.find_element(By.XPATH,"//*[contains(text(),'Health')]")
+        health_btn.click()
+        time.sleep(5)
+        print("dropdown")
+        select_box_1 = driver.find_elements(By.ID, "ClaimSubmission_dropdownContainerStyle__1dMIR_input")
+        print(len(select_box_1))
+        select_box_1[0].click()
+        print("Clicked select box 1")
+        time.sleep(5)
+        options = driver.find_elements(By.CLASS_NAME, "rw-list-option")
+        options[0].click()
+        print("Clicked dental thingy")
+        time.sleep(5)
+        select_box_2 = driver.find_elements(By.ID, "ClaimSubmission_dropdownContainerStyle__1dMIR_input")
+        select_box_2[1].click()
+        print("Clicked sub category thingy ")
+        time.sleep(5)
+        options = driver.find_elements(By.CLASS_NAME, "rw-list-option")
+        options[6].click()
+        time.sleep(5)
+        item_amount = driver.find_element(By.NAME, "claimItems.0.amountPaid")
+        item_amount.send_keys("1")
+        print("Sent amount thingy ")
+        time.sleep(5)
+        select_box_2[2].click()
+        print("Clicked person thingy ")
+        time.sleep(5)
+        options = driver.find_elements(By.CLASS_NAME, "rw-list-option")
+        print(len(options))
+        options[10].click()
+        print("Clicked emp2 thingy ")
+        time.sleep(5)
+        chck_btn = driver.find_element(By.CLASS_NAME, "sc-cBsrDa.fIiskw")
+        chck_btn.click()
+        print("Clicked check btn thingy ")
+        time.sleep(5)
+        submit_btn = driver.find_elements(By.CLASS_NAME, "sc-bBXxYQ.hlpCAH")
+        submit_btn[1].click()
+        print("Submit btn clicked ")
+        print("Claim Submitted Successfully!!!!")
+        time.sleep(7)
+    
+    def submit_wsa(self, driver):
         wellness_btn = driver.find_element(By.XPATH,"//*[contains(text(),'Wellness')]")
         wellness_btn.click()
         print("waiting for dropdown")
@@ -79,39 +127,22 @@ class NoReceipt():
         submit_btn[1].click()
         print("Submit btn clicked ")
         print("Claim Submitted Successfully!!!!")
-        time.sleep(30)
-        '''
-        item_for = driver.find_element(By.ID, "ClaimSubmission_dropdownContainerStyle__1dMIR_input")
-        item_for.click()
-        print("Clicked select box 2")
-        time.sleep(10)
-        emp2 = driver.find_element(By.XPATH, "//*[@id='ClaimSubmission_dropdownContainerStyle__1dMIR_listbox']/div[1]")
-        emp2.click()
-        print("Clicked emp2 thingy ")'''
-         
+        time.sleep(7)
+    
+    def prepay_thingy(self, driver):
+        out_of_pocket = driver.find_element(By.CLASS_NAME, "ui.grey.basic.button.sc-kLLXSd.atWDV")
+        out_of_pocket.click()
+        time.sleep(5)
 
-        '''select = Select(driver.find_element(By.XPATH, "(//div[@class='rw-dropdown-list-input'])[1]"))
-        select.select_by_visible_text('Wellness Spending')
-        time.sleep(15)
-        item_Amount=driver.find_element(By.XPATH, "//input[@name='claimItems.0.amountPaid']")
-        item_Amount.send_keys("2.00")
-        time.sleep(10)
-        select = Select(driver.find_element(By.XPATH, "(//div[@class='rw-dropdown-list-input'])[2]"))
-        select.select_by_visible_text('Dependent')
-        time.sleep(15)'''
-        
-
-        '''drop.select_by_value("Wellness Spending")'''
-        
-        '''spend_category = driver.find_element(By.CSS_SELECTOR, ".rw-dropdown-list-value")
-        #//*[@id="ClaimSubmission_dropdownContainerStyle__1dMIR_input"]/div[1]/span/svg
-        spend_category.click()
-       
-        wellness_spending = driver.find_element(By.CLASS_NAME, "ClaimSubmission_p_text__2XUfy")
-        wellness_spending.click()
-        sub_well_spending = driver.find_element(By.XPATH, "//*[@id='ClaimSubmission_dropdownContainerStyle__1dMIR_input']/div[1]/span/svg")
-        sub_well_spending.click()
-        sub_well_spending_drop = driver.find_element(By.XPATH, "//*[@id='ClaimSubmission_dropdownContainerStyle__1dMIR_listbox']/div[1]/p")
-        sub_well_spending_drop.click()
-        drop_down = driver.find_element(By.XPATH, "//body/div[@id='root']/div[@class='fonts_defaultFont__O2COt']/div/div[@class='container']/div[@class='container__inner']/div[@class='ClaimSubmission_cardContainer__3VmfR']/div[@class='ClaimSubmission_cardBox__tfnSG']/div[@class='ClaimSubmission_add_receipt__1VQET']/form[@action='#']/div/div[@class='ClaimSubmission_dropdown_container__2Y4Xd']/div[1]/div[1]/div[1]/span[1]")
-        drop_down.click()'''
+    def submit_hsa_wsa(self, driver, prepay):
+        self.normal_submit_procedure(driver, prepay)
+        time.sleep(5)
+        self.submit_wsa(driver)
+     
+    def submit_wsa_only(self, driver, prepay):
+        self.normal_submit_procedure(driver, prepay)
+        self.submit_wsa(driver)
+    
+    def submit_hsa_only(self, driver, prepay):
+        self.normal_submit_procedure(driver, prepay)
+        self.submit_hsa(driver)
